@@ -21,3 +21,9 @@ class Obj(pygame.sprite.Sprite):
             if self.frame > frames - 1:
                 self.frame = 0
             self.image = pygame.image.load(path + str(self.frame) + "." + file_type)
+
+class Wall(Obj):
+    def __init__(self, img, type, pos, *groups):
+        super().__init__(img, pos, *groups)
+
+        self.type = type
