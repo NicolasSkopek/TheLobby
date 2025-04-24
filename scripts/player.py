@@ -20,21 +20,24 @@ class Player(pygame.sprite.Sprite):
 
         self.running_sound = pygame.mixer.Sound("assets/sounds/running.mp3")
 
+        self.is_running = False
         self.size = size
 
     def input(self):
         key = pygame.key.get_pressed()
 
+        moving = False
+
         if key[pygame.K_w]:
             self.direction.y = -1
             self.flip = False
-            self.play_running_sound()
-            self.animation(8, 6, "assets/player/sprite/running_up/running_up", "png")
+            self.animation(4, 8, "assets/player/sprite/running_up/running_up", "png")
+            moving = True
         elif key[pygame.K_s]:
             self.direction.y = 1
             self.flip = False
-            self.play_running_sound()
-            self.animation(8, 6, "assets/player/sprite/running_down/running_down", "png")
+            self.animation(4, 8, "assets/player/sprite/running_down/running_down", "png")
+            moving = True
         else:
             self.direction.y = 0
 
@@ -42,13 +45,13 @@ class Player(pygame.sprite.Sprite):
         if key[pygame.K_a]:
             self.direction.x = -1
             self.flip = True
-            self.play_running_sound()
-            self.animation(8, 6, "assets/player/sprite/running_x/running_x", "png")
+            self.animation(4, 8, "assets/player/sprite/running_x/running_x", "png")
+            moving = True
         elif key[pygame.K_d]:
             self.direction.x = 1
             self.flip = False
-            self.play_running_sound()
-            self.animation(8, 6, "assets/player/sprite/running_x/running_x", "png")
+            self.animation(4, 8, "assets/player/sprite/running_x/running_x", "png")
+            moving = True
         else:
             self.direction.x = 0
 
@@ -66,11 +69,20 @@ class Player(pygame.sprite.Sprite):
             self.animation(60, 6, "assets/player/sprite/running_x/running_x", "png")
 
         if self.direction.x == 0 and self.direction.y == 0:
-            self.animation(8, 2, "assets/player/sprite/idle/idle", "png")
+            self.animation(15, 2, "assets/player/sprite/idle/idle", "png")
 
-    def play_running_sound(self):
-        if not pygame.mixer.get_busy():
+        if moving:
+            self.play_running_sound(True)
+        else:
+            self.play_running_sound(False)
+
+    def play_running_sound(self, is_running):
+        if is_running and not self.is_running:
             self.running_sound.play(-1)
+            self.is_running = True
+        elif not is_running and self.is_running:
+            self.running_sound.stop()
+            self.is_running = False
 
     def move(self):
         self.rect.x += self.direction.x * self.speed
@@ -84,14 +96,18 @@ class Player(pygame.sprite.Sprite):
                 if sprite.type == "w1":
                     self.rect.right = sprite.rect.left
                 if sprite.type == "w2":
-                    self.rect.bottom = self.rect.top + 52
+                    if self.rect.bottom > sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
                 if sprite.type == "nw":
-                    self.rect.top = sprite.rect.bottom
+                    limit = sprite.rect.top + sprite.rect.height * 0.35
+                    if self.rect.top < limit:
+                        self.rect.top = limit
                 if sprite.type == "l1":
-                    if self.rect.right - 200 == sprite.rect.left:
-                        self.rect.right = self.rect.left
-                    elif self.rect.bottom == sprite.rect.top:
-                        self.rect.bottom = self.rect.top
+                    if self.rect.right > sprite.rect.left and self.rect.left < sprite.rect.left:
+                        self.rect.right = sprite.rect.left
+
+                    elif self.rect.bottom > sprite.rect.top and self.rect.top < sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
 
 
     def animation(self, speed, frames, path, file_type):
