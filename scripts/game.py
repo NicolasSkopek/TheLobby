@@ -70,6 +70,8 @@ class Game(Scene):
                         Wall("assets/map/l2.png", "l2",[x, y], self.all_sprites, self.colision_sprites)
                     if col == "l3":
                         Wall("assets/map/l3.png", "l3",[x, y], self.all_sprites, self.colision_sprites)
+
+
     def events(self, event):
         pass
 

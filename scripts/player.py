@@ -19,6 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.tick = 0
 
         self.running_sound = pygame.mixer.Sound("assets/sounds/running.mp3")
+        self.running_sound.set_volume(4)
 
         self.is_running = False
         self.size = size
@@ -76,6 +77,9 @@ class Player(pygame.sprite.Sprite):
         else:
             self.play_running_sound(False)
 
+        print(f"{self.rect.x}  {self.rect.y}")
+
+
     def play_running_sound(self, is_running):
         if is_running and not self.is_running:
             self.running_sound.play(-1)
@@ -108,6 +112,12 @@ class Player(pygame.sprite.Sprite):
 
                     elif self.rect.bottom > sprite.rect.top and self.rect.top < sprite.rect.top:
                         self.rect.bottom = sprite.rect.top
+                if sprite.type == "l0":
+                    if self.rect.left < sprite.rect.right and self.rect.right > sprite.rect.right:
+                        self.rect.left = sprite.rect.right
+
+                    elif self.rect.bottom > sprite.rect.top and self.rect.top < sprite.rect.top:
+                        self.rect.bottom = sprite.rect.top
 
 
     def animation(self, speed, frames, path, file_type):
@@ -122,5 +132,5 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.move()
-        self.collision()
+        # self.collision()
 
