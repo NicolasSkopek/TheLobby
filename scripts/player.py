@@ -106,6 +106,7 @@ class Player(pygame.sprite.Sprite):
                     limit = sprite.rect.top + sprite.rect.height * 0.35
                     if self.rect.top < limit:
                         self.rect.top = limit
+
                 if sprite.type == "l1":
                     if self.rect.right > sprite.rect.left and self.rect.left < sprite.rect.left:
                         self.rect.right = sprite.rect.left
@@ -118,6 +119,22 @@ class Player(pygame.sprite.Sprite):
 
                     elif self.rect.bottom > sprite.rect.top and self.rect.top < sprite.rect.top:
                         self.rect.bottom = sprite.rect.top
+
+                if sprite.type == "p2":
+                    if self.rect.colliderect(sprite.rect):
+                        if self.rect.right > sprite.rect.left and self.rect.left < sprite.rect.left:
+                            self.rect.right = sprite.rect.left
+                        elif self.rect.left < sprite.rect.right and self.rect.right > sprite.rect.right:
+                            self.rect.left = sprite.rect.right
+                        elif self.rect.bottom > sprite.rect.top and self.rect.top < sprite.rect.top:
+                            self.rect.bottom = sprite.rect.top
+                        elif self.rect.top < sprite.rect.bottom and self.rect.bottom > sprite.rect.bottom:
+                            self.rect.top = sprite.rect.bottom
+
+                if sprite.type == "p1":
+                    limit = sprite.rect.top + sprite.rect.height * 0.35
+                    if self.rect.top < limit:
+                        self.rect.top = limit
 
 
     def animation(self, speed, frames, path, file_type):
@@ -132,5 +149,5 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.move()
-        # self.collision()
+        self.collision()
 

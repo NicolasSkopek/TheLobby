@@ -18,8 +18,8 @@ TILE_MAPPING = {
     "nw": "assets/map/noramal_wall.png",
     "l0": "assets/map/l0.png",
     "l1": "assets/map/l1.png",
-    "l2": "assets/map/l2.png",
-    "l3": "assets/map/l3.png"
+    "p1": "assets/map/pilar1.jpg",
+    "p2": "assets/map/pilar2.jpg"
 }
 
 
@@ -36,7 +36,7 @@ class Game(Scene):
 
 
         self.generate_map()
-        self.player = Player([200, 400], [200/7, 400/7],self.colision_sprites, self.all_sprites)
+        self.player = Player([1396, 1548], [200/7, 400/7],self.colision_sprites, self.all_sprites)
 
     def generate_map(self):
         for row_index, row in enumerate(MAP1):
@@ -66,10 +66,10 @@ class Game(Scene):
                         Wall("assets/map/l0.png", "l0", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "l1":
                         Wall("assets/map/l1.png", "l1",[x, y], self.all_sprites, self.colision_sprites)
-                    if col == "l2":
-                        Wall("assets/map/l2.png", "l2",[x, y], self.all_sprites, self.colision_sprites)
-                    if col == "l3":
-                        Wall("assets/map/l3.png", "l3",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "p1":
+                        Wall("assets/map/pilar1.jpg", "p1",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "p2":
+                        Wall("assets/map/pilar2.jpg", "p2",[x, y], self.all_sprites, self.colision_sprites)
 
 
     def events(self, event):

@@ -14,7 +14,7 @@ class Menu(Scene):
 
         self.bg = Obj("assets/menu/bg.png", [0,0], self.all_sprites)
 
-        self.active = False # APAGAR DEPOIS - APENAS PARA PULAR O MENU PARA TESTES
+        self.active = False  # APAGAR DEPOIS - APENAS PARA PULAR O MENU PARA TESTES
 
         self.music = pygame.mixer.Sound("assets/sounds/libetsdelay.wav")
         self.music.play(-1)
