@@ -36,7 +36,7 @@ class Game(Scene):
 
 
         self.generate_map()
-        self.player = Player([1396, 1548], [200/7, 400/7],self.colision_sprites, self.all_sprites)
+        self.player = Player([814, 210], [200/7, 400/7],self.colision_sprites, self.all_sprites)
 
     def generate_map(self):
         for row_index, row in enumerate(MAP1):
