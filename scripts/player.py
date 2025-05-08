@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3
+        self.speed = 40
 
         self.on_ground = False
         self.colision_group = colision_group
@@ -102,7 +102,7 @@ class Player(pygame.sprite.Sprite):
                 if sprite.type == "w2":
                     if self.rect.bottom > sprite.rect.top:
                         self.rect.bottom = sprite.rect.top
-                if sprite.type == "nw":
+                if sprite.type in ["nw", "h", "rg", "ww", "br", "sd", "bc", "bl"]:
                     limit = sprite.rect.top + sprite.rect.height * 0.35
                     if self.rect.top < limit:
                         self.rect.top = limit
@@ -149,4 +149,4 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.move()
-        self.collision()
+        ##self.collision()

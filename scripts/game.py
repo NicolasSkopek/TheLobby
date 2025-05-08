@@ -21,9 +21,12 @@ TILE_MAPPING = {
     "p2": "assets/map/pilar2.jpg",
     "rg": "assets/map/poster_wall.png",
     "ww": "assets/map/windowns_wall.png",
-    "h": "assets/map/handl_wall.png"
+    "h": "assets/map/handl_wall.png",
+    "br": "assets/map/bloodRight_wall.png",
+    "sd": "assets/map/stDireita_wall.png",
+    "bc": "assets/map/bloodCenterl_wall.png",
+    "bl": "assets/map/bloodLeft_wall.png"
 }
-
 
 class Game(Scene):
 
@@ -38,7 +41,7 @@ class Game(Scene):
 
 
         self.generate_map()
-        self.player = Player([814, 210], [200/7, 400/7],self.colision_sprites, self.all_sprites)
+        self.player = Player([214, 450], [200/7, 400/7],self.colision_sprites, self.all_sprites)
 
     def generate_map(self):
         for row_index, row in enumerate(MAP1):
@@ -74,6 +77,14 @@ class Game(Scene):
                         Wall("assets/map/windowns_wall.png", "ww",[x, y], self.all_sprites, self.colision_sprites)
                     if col == "h":
                         Wall("assets/map/handl_wall.png", "h",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "br":
+                        Wall("assets/map/bloodRight_wall.png", "br",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "sd":
+                        Wall("assets/map/stDireita_wall.png", "sd",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "bc":
+                        Wall("assets/map/bloodCenterl_wall.png", "bc",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "bl":
+                        Wall("assets/map/bloodLeft_wall.png", "bl",[x, y], self.all_sprites, self.colision_sprites)
         Panel([800, 130], [64, 64], self.colision_sprites, self.all_sprites)
 
 
