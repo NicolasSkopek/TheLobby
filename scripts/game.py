@@ -13,8 +13,6 @@ TILE_MAPPING = {
     "w2": "assets/map/wall_side2.png",
     "c0": "assets/map/corner0.png",
     "c1": "assets/map/corner1.png",
-    "c2": "assets/map/corner2.png",
-    "c3": "assets/map/corner3.png",
     "nw": "assets/map/noramal_wall.png",
     "l0": "assets/map/l0.png",
     "l1": "assets/map/l1.png",
@@ -56,10 +54,6 @@ class Game(Scene):
                         Wall("assets/map/corner0.png", "c0", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "c1":
                         Wall("assets/map/corner1.png", "c1", [x, y], self.all_sprites, self.colision_sprites)
-                    if col == "c2":
-                        Wall("assets/map/corner2.png", "c2", [x, y], self.all_sprites, self.colision_sprites)
-                    if col == "c3":
-                        Wall("assets/map/corner3.png", "c3", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "nw":
                         Wall("assets/map/noramal_wall.png", "nw", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "l0":
