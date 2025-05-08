@@ -5,6 +5,7 @@ from scripts.obj import *
 from scripts.player import Player
 from scripts.scene import Scene
 from scripts.settings import *
+from scripts.panel import *
 
 TILE_MAPPING = {
     "x": "assets/map/tile.png",
@@ -17,7 +18,10 @@ TILE_MAPPING = {
     "l0": "assets/map/l0.png",
     "l1": "assets/map/l1.png",
     "p1": "assets/map/pilar1.jpg",
-    "p2": "assets/map/pilar2.jpg"
+    "p2": "assets/map/pilar2.jpg",
+    "rg": "assets/map/poster_wall.png",
+    "ww": "assets/map/windowns_wall.png",
+    "h": "assets/map/handl_wall.png"
 }
 
 
@@ -64,6 +68,13 @@ class Game(Scene):
                         Wall("assets/map/pilar1.jpg", "p1",[x, y], self.all_sprites, self.colision_sprites)
                     if col == "p2":
                         Wall("assets/map/pilar2.jpg", "p2",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "rg":
+                        Wall("assets/map/poster_wall.png", "rg",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "ww":
+                        Wall("assets/map/windowns_wall.png", "ww",[x, y], self.all_sprites, self.colision_sprites)
+                    if col == "h":
+                        Wall("assets/map/handl_wall.png", "h",[x, y], self.all_sprites, self.colision_sprites)
+        Panel([800, 130], [64, 64], self.colision_sprites, self.all_sprites)
 
 
     def events(self, event):
