@@ -8,10 +8,7 @@ class Panel(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.original_image, size)
         self.rect = self.image.get_rect(topleft=pos)
 
-
-        self.on_ground = False
         self.colision_group = colision_group
-        self.flip = False
 
         self.frame = 0
         self.tick = 0
@@ -27,7 +24,6 @@ class Panel(pygame.sprite.Sprite):
             self.frame = (self.frame + 1) % frames
             self.original_image = pygame.image.load(f"assets/panel/panel{self.frame}.png")
             self.image = pygame.transform.scale(self.original_image, self.size)
-            self.image = pygame.transform.flip(self.image, self.flip, False)
 
     def update(self):
-        self.animation(15, 3)
+        self.animation(5, 5)

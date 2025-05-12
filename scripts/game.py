@@ -1,6 +1,7 @@
 import pygame
 
 from scripts.camera import Camera
+from scripts.enemy import Enemy
 from scripts.obj import *
 from scripts.player import Player
 from scripts.scene import Scene
@@ -8,7 +9,7 @@ from scripts.settings import *
 from scripts.panel import *
 
 TILE_MAPPING = {
-    "x": "assets/map/tile.png",
+    "x1": "assets/map/tile.png",
     "w0": "assets/map/wall_side0.png",
     "w1": "assets/map/wall_side1.png",
     "w2": "assets/map/wall_side2.png",
@@ -21,27 +22,31 @@ TILE_MAPPING = {
     "p2": "assets/map/pilar2.jpg",
     "rg": "assets/map/poster_wall.png",
     "ww": "assets/map/windowns_wall.png",
-    "h": "assets/map/handl_wall.png",
+    "h1": "assets/map/handl_wall.png",
     "br": "assets/map/bloodRight_wall.png",
     "sd": "assets/map/stDireita_wall.png",
     "bc": "assets/map/bloodCenterl_wall.png",
     "bl": "assets/map/bloodLeft_wall.png"
 }
 
+
 class Game(Scene):
 
     def __init__(self):
         super().__init__()
-        self.window.fill((0,0,255))
+        self.window.fill((0, 0, 255))
 
         self.all_sprites = Camera()
         self.colision_sprites = pygame.sprite.Group()
         self.music = pygame.mixer.Sound("assets/sounds/buzz.mp3")
         self.music.play(-1)
 
-
+        self.graph = 0
+        self.show_graph = False
         self.generate_map()
-        self.player = Player([214, 450], [200/7, 400/7],self.colision_sprites, self.all_sprites)
+        self.player = Player([214, 450], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
+        self.enemy = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.all_sprites)
+        self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.all_sprites)
 
     def generate_map(self):
         for row_index, row in enumerate(MAP1):
@@ -49,7 +54,7 @@ class Game(Scene):
                 if col in TILE_MAPPING:
                     x = col_index * TILE_SIZE
                     y = row_index * TILE_SIZE
-                    if col == "x":
+                    if col == "x1":
                         Obj("assets/map/tile.png", [x, y], self.all_sprites)
                     if col == "w0":
                         Wall("assets/map/wall_side0.png", "w0", [x, y], self.all_sprites, self.colision_sprites)
@@ -66,34 +71,73 @@ class Game(Scene):
                     if col == "l0":
                         Wall("assets/map/l0.png", "l0", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "l1":
-                        Wall("assets/map/l1.png", "l1",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/l1.png", "l1", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "p1":
-                        Wall("assets/map/pilar1.jpg", "p1",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/pilar1.jpg", "p1", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "p2":
-                        Wall("assets/map/pilar2.jpg", "p2",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/pilar2.jpg", "p2", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "rg":
-                        Wall("assets/map/poster_wall.png", "rg",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/poster_wall.png", "rg", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "ww":
-                        Wall("assets/map/windowns_wall.png", "ww",[x, y], self.all_sprites, self.colision_sprites)
-                    if col == "h":
-                        Wall("assets/map/handl_wall.png", "h",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/windowns_wall.png", "ww", [x, y], self.all_sprites, self.colision_sprites)
+                    if col == "h1":
+                        Wall("assets/map/handl_wall.png", "h1", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "br":
-                        Wall("assets/map/bloodRight_wall.png", "br",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/bloodRight_wall.png", "br", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "sd":
-                        Wall("assets/map/stDireita_wall.png", "sd",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/stDireita_wall.png", "sd", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "bc":
-                        Wall("assets/map/bloodCenterl_wall.png", "bc",[x, y], self.all_sprites, self.colision_sprites)
+                        Wall("assets/map/bloodCenterl_wall.png", "bc", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "bl":
-                        Wall("assets/map/bloodLeft_wall.png", "bl",[x, y], self.all_sprites, self.colision_sprites)
-        Panel([800, 130], [64, 64], self.colision_sprites, self.all_sprites)
+                        Wall("assets/map/bloodLeft_wall.png", "bl", [x, y], self.all_sprites, self.colision_sprites)
+        Panel([813, 145], [108/3.3, 94/3.3], self.colision_sprites, self.all_sprites)
 
+        self.graph = self.build_graph(MAP1)
+
+    def build_graph(self, map_data):
+        graph = {}
+
+        for row in range(len(map_data)):
+            for col in range(len(map_data[0])):
+                if map_data[row][col] == "x1":
+                    neighbors = []
+
+                    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        nx, ny = col + dx, row + dy
+
+                        if 0 <= ny < len(map_data) and 0 <= nx < len(map_data[0]):
+                            if map_data[ny][nx] == "x1":
+                                neighbors.append((nx, ny))
+
+                    if neighbors:
+                        graph[(col, row)] = neighbors
+
+        return graph
 
     def events(self, event):
-        pass
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_g:
+                self.show_graph = not self.show_graph
 
     def draw(self):
-        self.window.fill((14,14,14))
+        self.window.fill((14, 14, 14))
         self.all_sprites.custom_draw(self.player)
+
+        if self.show_graph:
+            self.draw_graph_debug()
+
+    def draw_graph_debug(self):
+        offset = self.all_sprites.offset
+
+        for node, neighbors in self.graph.items():
+            x = node[0] * TILE_SIZE + TILE_SIZE // 2 - offset.x
+            y = node[1] * TILE_SIZE + TILE_SIZE // 2 - offset.y
+            pygame.draw.circle(self.window, (255, 0, 0), (int(x), int(y)), 5)
+
+            for neighbor in neighbors:
+                nx = neighbor[0] * TILE_SIZE + TILE_SIZE // 2 - offset.x
+                ny = neighbor[1] * TILE_SIZE + TILE_SIZE // 2 - offset.y
+                pygame.draw.line(self.window, (0, 255, 0), (int(x), int(y)), (int(nx), int(ny)), 1)
 
     def update(self):
         self.all_sprites.update()
