@@ -1,21 +1,28 @@
 import pygame.sprite
 
 class Panel(pygame.sprite.Sprite):
-    def __init__(self, pos, size, colision_group, *groups):
+    def __init__(self, pos, size, type, *groups):
         super().__init__(*groups)
 
-        self.original_image = pygame.image.load("assets\panel\panel0.PNG")
+        self.original_image = pygame.image.load(r"assets/panel/panel0.PNG")
         self.image = pygame.transform.scale(self.original_image, size)
         self.rect = self.image.get_rect(topleft=pos)
 
-        self.colision_group = colision_group
-
+        self.type = type
+        self.fixed = False
         self.frame = 0
         self.tick = 0
         self.size = size
 
     def events(self):
         pass
+
+    def change_image(self):
+        if not self.fixed:  # Verifica se a imagem já foi alterada
+            self.fixed = True
+            self.original_image = pygame.image.load("assets/panel/panel5.PNG")
+            self.image = pygame.transform.scale(self.original_image, self.size)
+            print("Imagem alterada!")  # Debug print para confirmar a troca
 
     def animation(self, speed, frames):
         self.tick += 1
@@ -26,4 +33,5 @@ class Panel(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.original_image, self.size)
 
     def update(self):
-        self.animation(5, 5)
+        if not self.fixed:
+            self.animation(5, 5)

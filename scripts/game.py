@@ -44,9 +44,9 @@ class Game(Scene):
         self.graph = 0
         self.show_graph = False
         self.generate_map()
-        self.player = Player([214, 450], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
-        self.enemy = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.all_sprites)
-        self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.all_sprites)
+        self.player = Player([208, 470], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
+        self.enemy = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
+        ##self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
 
     def generate_map(self):
         for row_index, row in enumerate(MAP1):
@@ -90,7 +90,7 @@ class Game(Scene):
                         Wall("assets/map/bloodCenterl_wall.png", "bc", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "bl":
                         Wall("assets/map/bloodLeft_wall.png", "bl", [x, y], self.all_sprites, self.colision_sprites)
-        Panel([813, 145], [108/3.3, 94/3.3], self.colision_sprites, self.all_sprites)
+            Panel([813, 145], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
 
         self.graph = self.build_graph(MAP1)
 
@@ -114,10 +114,20 @@ class Game(Scene):
 
         return graph
 
+    def fix_panel(self):
+        for sprite in self.colision_sprites:
+            if isinstance(sprite, Panel):
+                if sprite.rect.colliderect(self.player.rect):
+                    sprite.change_image()
+
+
     def events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_g:
                 self.show_graph = not self.show_graph
+
+            if event.key == pygame.K_e:
+                self.fix_panel()
 
     def draw(self):
         self.window.fill((14, 14, 14))

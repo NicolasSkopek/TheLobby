@@ -1,5 +1,7 @@
 import pygame, sys
+from pygame import KEYDOWN
 
+from scripts import game
 from scripts.menu import *
 from scripts.settings import *
 from scripts.game import *

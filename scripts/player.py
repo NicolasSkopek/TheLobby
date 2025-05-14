@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 20
+        self.speed = 4
 
         self.on_ground = False
         self.colision_group = colision_group
@@ -42,32 +42,18 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.y = 0
 
-
-        if key[pygame.K_a]:
+        if key[pygame.K_a] and self.direction.y == 0:
             self.direction.x = -1
             self.flip = True
             self.animation(4, 8, "assets/player/sprite/running_x/running_x", "png")
             moving = True
-        elif key[pygame.K_d]:
+        elif key[pygame.K_d] and self.direction.y == 0:
             self.direction.x = 1
             self.flip = False
             self.animation(4, 8, "assets/player/sprite/running_x/running_x", "png")
             moving = True
         else:
             self.direction.x = 0
-
-        if self.direction.x == 1 and self.direction.y == -1:
-            self.flip = False
-            self.animation(60, 6, "assets/player/sprite/running_x/running_x", "png")
-        elif self.direction.x == -1 and self.direction.y == -1:
-            self.flip = True
-            self.animation(60, 6, "assets/player/sprite/running_x/running_x", "png")
-        elif self.direction.x == 1 and self.direction.y == 1:
-            self.flip = False
-            self.animation(60, 6, "assets/player/sprite/running_x/running_x", "png")
-        elif self.direction.x == -1 and self.direction.y == 1:
-            self.flip = True
-            self.animation(60, 6, "assets/player/sprite/running_x/running_x", "png")
 
         if self.direction.x == 0 and self.direction.y == 0:
             self.animation(15, 2, "assets/player/sprite/idle/idle", "png")
@@ -76,8 +62,6 @@ class Player(pygame.sprite.Sprite):
             self.play_running_sound(True)
         else:
             self.play_running_sound(False)
-
-        ##print(f"{self.rect.x}  {self.rect.y}")
 
 
     def play_running_sound(self, is_running):

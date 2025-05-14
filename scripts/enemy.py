@@ -3,8 +3,9 @@ from collections import deque
 import random
 from scripts.settings import TILE_SIZE
 
+
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, size, colision_group, graph, *groups):
+    def __init__(self, pos, size, colision_group, graph, player, *groups):
         super().__init__(*groups)
         self.graph = graph
 
@@ -13,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3
+        self.speed = 3.5
 
         self.colision_group = colision_group
         self.size = size
@@ -25,6 +26,7 @@ class Enemy(pygame.sprite.Sprite):
         self.path = []
         self.path_index = 0
         self.target_pos = None
+        self.player = player
         self.recalculate_path()
 
     def recalculate_path(self):
@@ -42,7 +44,6 @@ class Enemy(pygame.sprite.Sprite):
 
         goal = random.choice(valid_goals)
         path = Enemy.bfs(self.graph, start, goal)
-
 
         if path and len(path) > 1:
             self.path = path
@@ -78,8 +79,11 @@ class Enemy(pygame.sprite.Sprite):
             direction = direction.normalize()
             self.direction = direction
             move = direction * self.speed
-            self.rect.centerx += int(move.x)
-            self.rect.centery += int(move.y)
+            new_position = self.rect.center + pygame.math.Vector2(move.x, move.y)
+
+            if self.is_walkable(new_position):
+                self.rect.centerx += int(move.x)
+                self.rect.centery += int(move.y)
 
             if pygame.math.Vector2(self.rect.center).distance_to(self.target_pos) < 2:
                 self.path_index += 1
@@ -87,6 +91,56 @@ class Enemy(pygame.sprite.Sprite):
                     self.target_pos = self.node_to_pos(self.path[self.path_index])
                 else:
                     self.target_pos = None
+
+    def move_towards_player(self):
+        player_position = self.player.rect.center
+        enemy_position = self.rect.center
+
+        direction = pygame.math.Vector2(player_position[0] - enemy_position[0], player_position[1] - enemy_position[1])
+
+        if direction.length() > 0:
+            direction = direction.normalize()
+
+        # Tentativa de mover na direção do jogador
+        move = direction * self.speed
+        new_position = self.rect.center + pygame.math.Vector2(move.x, move.y)
+
+        # Verifica se a nova posição está livre (não colide com paredes)
+        if self.is_walkable(new_position):
+            self.rect.centerx += int(move.x)
+            self.rect.centery += int(move.y)
+        else:
+            # Caso a direção atual esteja bloqueada, tenta mover em uma direção alternativa
+            # Tenta mover horizontalmente (esquerda/direita)
+            alternative_move_x = pygame.math.Vector2(move.x, 0) * self.speed
+            alternative_position_x = self.rect.center + alternative_move_x
+            if self.is_walkable(alternative_position_x):
+                self.rect.centerx += int(alternative_move_x.x)
+            else:
+                # Se não for possível mover horizontalmente, tenta verticalmente (cima/baixo)
+                alternative_move_y = pygame.math.Vector2(0, move.y) * self.speed
+                alternative_position_y = self.rect.center + alternative_move_y
+                if self.is_walkable(alternative_position_y):
+                    self.rect.centery += int(alternative_move_y.y)
+
+    def is_walkable(self, position):
+        col = int(position[0] // TILE_SIZE)
+        row = int(position[1] // TILE_SIZE)
+
+        if (col, row) in self.graph:
+            return True
+        return False
+
+    def update(self):
+        player_position = self.player.rect.center
+        enemy_position = self.rect.center
+        distance_to_player = pygame.math.Vector2(player_position[0] - enemy_position[0],
+                                                 player_position[1] - enemy_position[1]).length()
+
+        if distance_to_player < 250: ## DISTÂNCIA PARA PERSEGUIÇÃO
+            self.move_towards_player()
+        else:
+            self.move_along_path()
 
     @staticmethod
     def bfs(graph, start, goal):
@@ -107,6 +161,3 @@ class Enemy(pygame.sprite.Sprite):
                     new_path.append(neighbor)
                     queue.append(new_path)
         return []
-
-    def update(self):
-        self.move_along_path()
