@@ -18,11 +18,11 @@ class Panel(pygame.sprite.Sprite):
         pass
 
     def change_image(self):
-        if not self.fixed:  # Verifica se a imagem já foi alterada
+        if not self.fixed:
             self.fixed = True
             self.original_image = pygame.image.load("assets/panel/panel5.PNG")
             self.image = pygame.transform.scale(self.original_image, self.size)
-            print("Imagem alterada!")  # Debug print para confirmar a troca
+
 
     def animation(self, speed, frames):
         self.tick += 1

@@ -16,7 +16,7 @@ class Menu(Scene):
 
         self.active = True  # APAGAR DEPOIS - APENAS PARA PULAR O MENU PARA TESTES
 
-        self.music = pygame.mixer.Sound("assets/sounds/libetsdelay.wav")
+        self.music = pygame.mixer.Sound("assets/sounds/menuost.mp3")
         self.music.play(-1)
 
         self.btn_play = Button(135, 450, "play", self.next_scene)

@@ -64,6 +64,7 @@ class Player(pygame.sprite.Sprite):
             self.play_running_sound(False)
 
 
+
     def play_running_sound(self, is_running):
         if is_running and not self.is_running:
             self.running_sound.play(-1)
@@ -75,6 +76,8 @@ class Player(pygame.sprite.Sprite):
     def move(self):
         self.rect.x += self.direction.x * self.speed
         self.rect.y += self.direction.y * self.speed
+
+        ##print(self.rect.x, " and ", self.rect.y)
 
     def collision(self):
         for sprite in self.colision_group:

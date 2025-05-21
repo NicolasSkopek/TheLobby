@@ -18,6 +18,11 @@ class StartGame:
 
         pygame.display.set_caption(TITLE)
 
+        icon = pygame.image.load("assets/icon/icon.png")
+        icon = pygame.transform.scale(icon, (32, 32))
+        pygame.display.set_icon(icon)
+
+
         self.scene = "menu"
         self.current_scene = Menu()
 

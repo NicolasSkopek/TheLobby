@@ -2,6 +2,7 @@ import pygame
 
 from scripts.camera import Camera
 from scripts.enemy import Enemy
+from scripts.gate import Gate
 from scripts.obj import *
 from scripts.player import Player
 from scripts.scene import Scene
@@ -39,12 +40,18 @@ class Game(Scene):
         self.all_sprites = Camera()
         self.colision_sprites = pygame.sprite.Group()
         self.music = pygame.mixer.Sound("assets/sounds/buzz.mp3")
+        self.death_sound = pygame.mixer.Sound("assets/sounds/death_sound.mp3")
+        self.panel_sound = pygame.mixer.Sound("assets/sounds/panel_sound.mp3")
         self.music.play(-1)
 
+        self.active = True
+
+        self.fixed_panels = 0
         self.graph = 0
         self.show_graph = False
         self.generate_map()
         self.player = Player([208, 470], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
+        self.gate = Gate([1090, 256], [64, 64], "gate", self.all_sprites, self.colision_sprites)
         self.enemy = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
         ##self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
 
@@ -91,6 +98,8 @@ class Game(Scene):
                     if col == "bl":
                         Wall("assets/map/bloodLeft_wall.png", "bl", [x, y], self.all_sprites, self.colision_sprites)
             Panel([813, 145], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
+            Panel([300, 1172], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
+            Panel([1232, 2255], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
 
         self.graph = self.build_graph(MAP1)
 
@@ -115,11 +124,22 @@ class Game(Scene):
         return graph
 
     def fix_panel(self):
+        self.fixed_panels += 1
         for sprite in self.colision_sprites:
             if isinstance(sprite, Panel):
-                if sprite.rect.colliderect(self.player.rect):
+                if sprite.rect.colliderect(self.player.rect) and sprite.fixed == False:
                     sprite.change_image()
+                    self.panel_sound.play()
+                    self.gate.change_image(self.fixed_panels)
 
+
+    def game_over(self):
+        if self.enemy.rect.colliderect(self.player.rect):
+            self.death_sound.play()
+            self.active = False
+            self.music.stop()
+            self.player.running_sound.stop()
+            self.fixed_panels = 0
 
     def events(self, event):
         if event.type == pygame.KEYDOWN:
@@ -127,7 +147,10 @@ class Game(Scene):
                 self.show_graph = not self.show_graph
 
             if event.key == pygame.K_e:
-                self.fix_panel()
+                for sprite in self.colision_sprites:
+                    if isinstance(sprite, Panel) and sprite.rect.colliderect(self.player.rect) and not sprite.fixed:
+                        self.fix_panel()
+                        break
 
     def draw(self):
         self.window.fill((14, 14, 14))
@@ -151,3 +174,4 @@ class Game(Scene):
 
     def update(self):
         self.all_sprites.update()
+        self.game_over()
