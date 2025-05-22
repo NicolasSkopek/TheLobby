@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3.8
+        self.speed = 3.5
 
         self.colision_group = colision_group
         self.size = size
@@ -101,23 +101,18 @@ class Enemy(pygame.sprite.Sprite):
         if direction.length() > 0:
             direction = direction.normalize()
 
-        # Tentativa de mover na direção do jogador
         move = direction * self.speed
         new_position = self.rect.center + pygame.math.Vector2(move.x, move.y)
 
-        # Verifica se a nova posição está livre (não colide com paredes)
         if self.is_walkable(new_position):
             self.rect.centerx += int(move.x)
             self.rect.centery += int(move.y)
         else:
-            # Caso a direção atual esteja bloqueada, tenta mover em uma direção alternativa
-            # Tenta mover horizontalmente (esquerda/direita)
             alternative_move_x = pygame.math.Vector2(move.x, 0) * self.speed
             alternative_position_x = self.rect.center + alternative_move_x
             if self.is_walkable(alternative_position_x):
                 self.rect.centerx += int(alternative_move_x.x)
             else:
-                # Se não for possível mover horizontalmente, tenta verticalmente (cima/baixo)
                 alternative_move_y = pygame.math.Vector2(0, move.y) * self.speed
                 alternative_position_y = self.rect.center + alternative_move_y
                 if self.is_walkable(alternative_position_y):
@@ -137,7 +132,7 @@ class Enemy(pygame.sprite.Sprite):
         distance_to_player = pygame.math.Vector2(player_position[0] - enemy_position[0],
                                                  player_position[1] - enemy_position[1]).length()
 
-        if distance_to_player < 250: ## DISTÂNCIA PARA PERSEGUIÇÃO
+        if distance_to_player < 600: ## DISTÂNCIA PARA PERSEGUIÇÃO
             self.move_towards_player()
         else:
             self.move_along_path()
