@@ -34,4 +34,5 @@ class Panel(pygame.sprite.Sprite):
 
     def update(self):
         if not self.fixed:
-            self.animation(5, 5)
+            ##self.animation(5, 5)
+            pass

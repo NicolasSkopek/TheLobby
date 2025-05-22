@@ -8,6 +8,7 @@ from scripts.player import Player
 from scripts.scene import Scene
 from scripts.settings import *
 from scripts.panel import *
+from scripts.text import Text
 
 TILE_MAPPING = {
     "x1": "assets/map/tile.png",
@@ -46,12 +47,15 @@ class Game(Scene):
 
         self.active = True
 
+        self.interaction_text = Text("assets/font/simsunb.ttf", 24, "press 'E' to interact", (255, 255, 255), (130, 20))
+        self.interaction_timer = 420
+
         self.fixed_panels = 0
         self.graph = 0
         self.show_graph = False
         self.generate_map()
-        self.player = Player([208, 470], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
         self.gate = Gate([1090, 256], [64, 64], "gate", self.all_sprites, self.colision_sprites)
+        self.player = Player([208, 470], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
         self.enemy = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
         ##self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
 
@@ -100,6 +104,10 @@ class Game(Scene):
             Panel([813, 145], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
             Panel([300, 1172], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
             Panel([1232, 2255], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
+            Panel([2160, 1105], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
+            Panel([3308, 1170], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
+            Panel([4075, 1360], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
+
 
         self.graph = self.build_graph(MAP1)
 
@@ -156,6 +164,9 @@ class Game(Scene):
         self.window.fill((14, 14, 14))
         self.all_sprites.custom_draw(self.player)
 
+        if self.interaction_timer > 0:
+            self.interaction_text.draw()
+
         if self.show_graph:
             self.draw_graph_debug()
 
@@ -175,3 +186,5 @@ class Game(Scene):
     def update(self):
         self.all_sprites.update()
         self.game_over()
+        if self.interaction_timer > 0:
+            self.interaction_timer -= 1
