@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3.5
+        self.speed = 3.8
 
         self.colision_group = colision_group
         self.size = size
@@ -132,7 +132,7 @@ class Enemy(pygame.sprite.Sprite):
         distance_to_player = pygame.math.Vector2(player_position[0] - enemy_position[0],
                                                  player_position[1] - enemy_position[1]).length()
 
-        if distance_to_player < 600: ## DISTÂNCIA PARA PERSEGUIÇÃO
+        if distance_to_player < 400: ## DISTÂNCIA PARA PERSEGUIÇÃO
             self.move_towards_player()
         else:
             self.move_along_path()
