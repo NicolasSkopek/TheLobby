@@ -48,7 +48,9 @@ class Game(Scene):
         self.active = True
 
         self.interaction_text = Text("assets/font/simsunb.ttf", 24, "press 'E' to interact", (255, 255, 255), (130, 20))
-        self.interaction_timer = 420
+        self.interaction_timer = 200
+        self.message_text = Text("assets/font/simsunb.ttf", 24, "you only got one chance", (255, 255, 255), (140, 20))
+        self.message_timer = 420
 
         self.fixed_panels = 0
         self.graph = 0
@@ -56,7 +58,7 @@ class Game(Scene):
         self.generate_map()
         self.gate = Gate([1090, 256], [64, 64], "gate", self.all_sprites, self.colision_sprites)
         self.player = Player([208, 470], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
-        self.enemy = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
+        self.enemy = Enemy([1394, 1443], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
         ##self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
 
     def generate_map(self):
@@ -167,6 +169,9 @@ class Game(Scene):
         if self.interaction_timer > 0:
             self.interaction_text.draw()
 
+        if self.message_timer > 0 >= self.interaction_timer:
+            self.message_text.draw()
+
         if self.show_graph:
             self.draw_graph_debug()
 
@@ -186,5 +191,8 @@ class Game(Scene):
     def update(self):
         self.all_sprites.update()
         self.game_over()
+
         if self.interaction_timer > 0:
             self.interaction_timer -= 1
+        elif self.message_timer > 0:
+            self.message_timer -= 1
