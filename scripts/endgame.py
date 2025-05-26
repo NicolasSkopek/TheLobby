@@ -25,7 +25,6 @@ class EndGame(Scene):
             pygame.image.load("assets/menu/image1.png"),
             pygame.image.load("assets/menu/image2.png"),
             pygame.image.load("assets/menu/image3.png"),
-            pygame.image.load("assets/menu/image4.png")
         ]
         self.current_image_index = 0  # Índice da imagem atual
         self.alpha = 0  # Transparência inicial (0 = totalmente transparente)
@@ -83,7 +82,7 @@ class EndGame(Scene):
         image.set_alpha(self.alpha)
 
         # Desenha a imagem com o efeito de fade
-        self.window.blit(image, (300, 300))  # Exibe a imagem com fade
+        self.window.blit(image, (125, 200))  # Exibe a imagem com fade
 
         # Desenha os botões
         self.btn_return.draw()
