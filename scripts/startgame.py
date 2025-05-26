@@ -2,6 +2,7 @@ import pygame, sys
 from pygame import KEYDOWN
 
 from scripts import game
+from scripts.endgame import EndGame
 from scripts.menu import *
 from scripts.settings import *
 from scripts.game import *
@@ -29,19 +30,22 @@ class StartGame:
         self.fps = pygame.time.Clock()
 
     def run(self):
-
         while True:
-
             if self.scene == "menu" and self.current_scene.active == False:
                 self.scene = "game"
                 self.current_scene = Game()
-            elif self.scene == "game" and self.current_scene.active == False:
+            elif self.scene == "game" and self.current_scene.active == False and self.current_scene.gameover == True:
                 self.scene = "gameover"
                 self.current_scene = GameOver()
+            elif self.scene == "game" and self.current_scene.active == False and self.current_scene.gameover == False:
+                self.scene = "endgame"
+                self.current_scene = EndGame()
+            elif self.scene == "endgame" and self.current_scene.active == False:
+                self.scene = "menu"
+                self.current_scene = Menu()
             elif self.scene == "gameover" and self.current_scene.active == False:
                 self.scene = "menu"
                 self.current_scene = Menu()
-
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

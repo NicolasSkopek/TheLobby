@@ -45,20 +45,20 @@ class Game(Scene):
         self.panel_sound = pygame.mixer.Sound("assets/sounds/panel_sound.mp3")
         self.music.play(-1)
 
-        self.active = True
-
         self.interaction_text = Text("assets/font/simsunb.ttf", 24, "press 'E' to interact", (255, 255, 255), (130, 20))
         self.interaction_timer = 200
         self.message_text = Text("assets/font/simsunb.ttf", 24, "you only got one chance", (255, 255, 255), (140, 20))
         self.message_timer = 420
 
-        self.fixed_panels = 0
+        self.gameover = False
+
+        self.fixed_panels = 6
         self.graph = 0
         self.show_graph = False
         self.generate_map()
         self.gate = Gate([1090, 256], [64, 64], "gate", self.all_sprites, self.colision_sprites)
-        self.player = Player([208, 470], [200 / 7, 400 / 7], self.colision_sprites, self.all_sprites)
-        self.enemy = Enemy([1394, 1443], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
+        self.player = Player([208, 470], [200 / 8, 400 / 8], self.colision_sprites, self.all_sprites)
+        self.enemy = Enemy([1394, 1443], [187 / 6, 486 / 6], self.colision_sprites, self.graph, self.player, self.all_sprites)
         ##self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
 
     def generate_map(self):
@@ -142,11 +142,19 @@ class Game(Scene):
                     self.panel_sound.play()
                     self.gate.change_image(self.fixed_panels)
 
+    def finishGame(self):
+        if self.gate.rect.colliderect(self.player.rect) and self.fixed_panels == 6:
+            self.active = False
+            self.music.stop()
+            self.player.running_sound.stop()
+            self.fixed_panels = 0
+
 
     def game_over(self):
         if self.enemy.rect.colliderect(self.player.rect):
             self.death_sound.play()
             self.active = False
+            self.gameover = True
             self.music.stop()
             self.player.running_sound.stop()
             self.fixed_panels = 0
@@ -157,6 +165,7 @@ class Game(Scene):
                 self.show_graph = not self.show_graph
 
             if event.key == pygame.K_e:
+                self.finishGame()
                 for sprite in self.colision_sprites:
                     if isinstance(sprite, Panel) and sprite.rect.colliderect(self.player.rect) and not sprite.fixed:
                         self.fix_panel()

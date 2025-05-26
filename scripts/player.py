@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 4
+        self.speed = 20
 
         self.on_ground = False
         self.colision_group = colision_group
