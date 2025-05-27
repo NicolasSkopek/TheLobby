@@ -41,7 +41,10 @@ class Game(Scene):
         self.all_sprites = Camera()
         self.colision_sprites = pygame.sprite.Group()
         self.music = pygame.mixer.Sound("assets/sounds/buzz.mp3")
+
+        self.death_channel = pygame.mixer.Channel(4)
         self.death_sound = pygame.mixer.Sound("assets/sounds/death_sound.mp3")
+
         self.panel_sound = pygame.mixer.Sound("assets/sounds/panel_sound.mp3")
         self.music.play(-1)
 
@@ -151,7 +154,7 @@ class Game(Scene):
 
     def game_over(self):
         if self.enemy.rect.colliderect(self.player.rect):
-            self.death_sound.play()
+            self.death_channel.play(self.death_sound)
             self.active = False
             self.gameover = True
             self.stopAllSounds()

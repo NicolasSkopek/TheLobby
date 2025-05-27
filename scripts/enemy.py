@@ -20,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.flip_image = False
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3.9
+        self.speed = 3.95
 
         self.footsteps_sound = pygame.mixer.Sound("assets/sounds/footsteps.mp3")
         self.chase_sound = pygame.mixer.Sound("assets/sounds/screams2.mp3")
@@ -43,10 +43,15 @@ class Enemy(pygame.sprite.Sprite):
         if distance_to_player < 400:
             if not self.chase_channel.get_busy():
                 self.chase_channel.play(self.chase_sound, loops=-1)
+            if self.footsteps_channel.get_busy():
+                self.footsteps_channel.stop()
+
         elif distance_to_player < 1000:
+            if self.chase_channel.get_busy():
+                self.chase_channel.stop()
             if not self.footsteps_channel.get_busy():
                 self.footsteps_channel.play(self.footsteps_sound, loops=-1)
-                self.chase_channel.stop()
+
         else:
             if self.chase_channel.get_busy():
                 self.chase_channel.stop()
@@ -119,13 +124,31 @@ class Enemy(pygame.sprite.Sprite):
                     self.target_pos = None
 
     def chase_player(self):
-        player_node = (
-            self.player.rect.centerx // TILE_SIZE,
-            self.player.rect.centery // TILE_SIZE
-        )
+        px, py = self.player.rect.center
+        col = int(px // TILE_SIZE)
+        row = int(py // TILE_SIZE)
+        player_node = (col, row)
 
         if not self.path or self.path_index >= len(self.path) or self.path[-1] != player_node:
-            self.recalculate_path(goal=player_node)
+            if player_node in self.graph:
+                self.recalculate_path(goal=player_node)
+            else:
+                directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 1)]
+                neighbors = [
+                    (col + dx, row + dy)
+                    for dx, dy in directions
+                    if (col + dx, row + dy) in self.graph
+                ]
+                if neighbors:
+                    closest = min(
+                        neighbors,
+                        key=lambda n: pygame.math.Vector2(n[0] * TILE_SIZE + TILE_SIZE // 2,
+                                                          n[1] * TILE_SIZE + TILE_SIZE // 2).distance_to((px, py))
+                    )
+                    self.recalculate_path(goal=closest)
+                else:
+                    self.path = []
+                    self.target_pos = None
 
         self.move_along_path()
 
