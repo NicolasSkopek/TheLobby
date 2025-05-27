@@ -52,7 +52,7 @@ class Game(Scene):
 
         self.gameover = False
 
-        self.fixed_panels = 6
+        self.fixed_panels = 0
         self.graph = 0
         self.show_graph = False
         self.generate_map()
@@ -103,6 +103,7 @@ class Game(Scene):
                         Wall("assets/map/bloodCenterl_wall.png", "bc", [x, y], self.all_sprites, self.colision_sprites)
                     if col == "bl":
                         Wall("assets/map/bloodLeft_wall.png", "bl", [x, y], self.all_sprites, self.colision_sprites)
+
             Panel([813, 145], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
             Panel([300, 1172], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
             Panel([1232, 2255], [108 / 3.3, 94 / 3.3], "panel", self.all_sprites, self.colision_sprites)
@@ -145,19 +146,22 @@ class Game(Scene):
     def finishGame(self):
         if self.gate.rect.colliderect(self.player.rect) and self.fixed_panels == 6:
             self.active = False
-            self.music.stop()
-            self.player.running_sound.stop()
+            self.stopAllSounds()
             self.fixed_panels = 0
-
 
     def game_over(self):
         if self.enemy.rect.colliderect(self.player.rect):
             self.death_sound.play()
             self.active = False
             self.gameover = True
-            self.music.stop()
-            self.player.running_sound.stop()
+            self.stopAllSounds()
             self.fixed_panels = 0
+
+    def stopAllSounds(self):
+        self.music.stop()
+        self.player.running_sound.stop()
+        ##self.enemy.scream_sound.stop()
+        ##self.enemy.chase_sound.stop()
 
     def events(self, event):
         if event.type == pygame.KEYDOWN:

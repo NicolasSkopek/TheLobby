@@ -20,20 +20,23 @@ class EndGame(Scene):
         self.btn_return = Button(1050, 380, "return to menu", self.next_scene)
         self.btn_quit = Button(1050, 430, "quit", self.quit_game)
 
-        # Lista de imagens para o efeito de transição
         self.images = [
             pygame.image.load("assets/menu/image1.png"),
             pygame.image.load("assets/menu/image2.png"),
             pygame.image.load("assets/menu/image3.png"),
+            pygame.image.load("assets/menu/image4.png"),
+            pygame.image.load("assets/menu/image5.png"),
+            pygame.image.load("assets/menu/image7.png"),
+            pygame.image.load("assets/menu/image9.png"),
         ]
-        self.current_image_index = 0  # Índice da imagem atual
-        self.alpha = 0  # Transparência inicial (0 = totalmente transparente)
-        self.fade_in = True  # Controla se o fade é para entrada ou saída
+        self.current_image_index = 0
+        self.alpha = 0
+        self.fade_in = True
 
-        self.image_display_time = 6000  # Tempo para exibir cada imagem em milissegundos
-        self.fade_out_delay = 3000  # Tempo em milissegundos para aguardar antes de iniciar o fade-out
-        self.last_change_time = pygame.time.get_ticks()  # Armazena o tempo da última troca de imagem
-        self.fade_out_start_time = None  # Marca o tempo de início do fade-out
+        self.image_display_time = 6000
+        self.fade_out_delay = 3000
+        self.last_change_time = pygame.time.get_ticks()
+        self.fade_out_start_time = None
 
     def next_scene(self):
         self.music.stop()
@@ -51,42 +54,34 @@ class EndGame(Scene):
 
     def update(self):
 
-        # Verifica o tempo de transição de imagem
         current_time = pygame.time.get_ticks()
         if current_time - self.last_change_time > self.image_display_time:
             self.last_change_time = current_time
             self.current_image_index = (self.current_image_index + 1) % len(self.images)
 
-            # Inicia o fade-in da nova imagem
             self.alpha = 0
             self.fade_in = True
-            self.fade_out_start_time = None  # Reseta o tempo do fade-out
+            self.fade_out_start_time = None
 
-        # Gerenciamento do fade-in/fade-out
         if self.fade_in:
-            self.alpha += 5  # Aumenta a opacidade
+            self.alpha += 5
             if self.alpha >= 255:
                 self.alpha = 255
-                self.fade_in = False  # Muda para fade-out quando atingir opacidade total
-                self.fade_out_start_time = current_time  # Marca o início do fade-out
+                self.fade_in = False
+                self.fade_out_start_time = current_time
         else:
-            # Verifica se o tempo de delay para iniciar o fade-out já passou
             if self.fade_out_start_time and current_time - self.fade_out_start_time >= self.fade_out_delay:
-                self.alpha -= 2  # Diminui a opacidade mais lentamente
+                self.alpha -= 2
             if self.alpha <= 0:
                 self.alpha = 0
-                self.fade_in = True  # Muda para fade-in quando atingir total transparência
+                self.fade_in = True
 
-        # Cria uma cópia da imagem atual com a transparência aplicada
         image = self.images[self.current_image_index].copy()
         image.set_alpha(self.alpha)
 
-        # Desenha a imagem com o efeito de fade
-        self.window.blit(image, (125, 200))  # Exibe a imagem com fade
+        self.window.blit(image, (125, 200))
 
-        # Desenha os botões
         self.btn_return.draw()
         self.btn_quit.draw()
 
-        # Atualiza a tela
         pygame.display.flip()

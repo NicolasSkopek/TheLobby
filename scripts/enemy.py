@@ -154,7 +154,7 @@ class Enemy(pygame.sprite.Sprite):
         distance_to_player = pygame.math.Vector2(player_position[0] - enemy_position[0],
                                                  player_position[1] - enemy_position[1]).length()
 
-        if distance_to_player < 1:
+        if distance_to_player < 400:
             self.move_towards_player()
         else:
             self.move_along_path()
