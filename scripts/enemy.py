@@ -20,7 +20,13 @@ class Enemy(pygame.sprite.Sprite):
         self.flip_image = False
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3.8
+        self.speed = 3.9
+
+        self.footsteps_sound = pygame.mixer.Sound("assets/sounds/footsteps.mp3")
+        self.chase_sound = pygame.mixer.Sound("assets/sounds/screams2.mp3")
+
+        self.footsteps_channel = pygame.mixer.Channel(1)
+        self.chase_channel = pygame.mixer.Channel(2)
 
         self.colision_group = colision_group
 
@@ -33,20 +39,35 @@ class Enemy(pygame.sprite.Sprite):
         self.player = player
         self.recalculate_path()
 
-    def recalculate_path(self):
+    def handle_sounds(self, distance_to_player):
+        if distance_to_player < 400:
+            if not self.chase_channel.get_busy():
+                self.chase_channel.play(self.chase_sound, loops=-1)
+        elif distance_to_player < 1000:
+            if not self.footsteps_channel.get_busy():
+                self.footsteps_channel.play(self.footsteps_sound, loops=-1)
+                self.chase_channel.stop()
+        else:
+            if self.chase_channel.get_busy():
+                self.chase_channel.stop()
+            if self.footsteps_channel.get_busy():
+                self.footsteps_channel.stop()
+
+    def recalculate_path(self, goal=None):
         start = self.get_current_node()
         if start not in self.graph or not self.graph[start]:
             self.path = []
             self.target_pos = None
             return
 
-        valid_goals = [node for node in self.graph if node != start]
-        if not valid_goals:
-            self.path = []
-            self.target_pos = None
-            return
+        if goal is None:
+            valid_goals = [node for node in self.graph if node != start]
+            if not valid_goals:
+                self.path = []
+                self.target_pos = None
+                return
+            goal = random.choice(valid_goals)
 
-        goal = random.choice(valid_goals)
         path = Enemy.bfs(self.graph, start, goal)
 
         if path and len(path) > 1:
@@ -97,30 +118,16 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     self.target_pos = None
 
-    def move_towards_player(self):
-        player_position = self.player.rect.center
-        enemy_position = self.rect.center
+    def chase_player(self):
+        player_node = (
+            self.player.rect.centerx // TILE_SIZE,
+            self.player.rect.centery // TILE_SIZE
+        )
 
-        direction = pygame.math.Vector2(player_position[0] - enemy_position[0], player_position[1] - enemy_position[1])
+        if not self.path or self.path_index >= len(self.path) or self.path[-1] != player_node:
+            self.recalculate_path(goal=player_node)
 
-        if direction.length() > 0:
-            self.direction = direction.normalize()
-            self.update_animation_direction()
-
-        move = self.direction * self.speed
-        new_position = self.rect.center + pygame.math.Vector2(move.x, move.y)
-
-        if self.is_walkable(new_position):
-            self.rect.centerx += int(move.x)
-            self.rect.centery += int(move.y)
-        else:
-            alt_x = pygame.math.Vector2(move.x, 0)
-            if self.is_walkable(self.rect.center + alt_x):
-                self.rect.centerx += int(alt_x.x)
-            else:
-                alt_y = pygame.math.Vector2(0, move.y)
-                if self.is_walkable(self.rect.center + alt_y):
-                    self.rect.centery += int(alt_y.y)
+        self.move_along_path()
 
     def is_walkable(self, position):
         col = int(position[0] // TILE_SIZE)
@@ -151,11 +158,13 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         player_position = self.player.rect.center
         enemy_position = self.rect.center
-        distance_to_player = pygame.math.Vector2(player_position[0] - enemy_position[0],
-                                                 player_position[1] - enemy_position[1]).length()
+        distance_to_player = pygame.math.Vector2(player_position) - pygame.math.Vector2(enemy_position)
+        distance = distance_to_player.length()
 
-        if distance_to_player < 400:
-            self.move_towards_player()
+        self.handle_sounds(distance)
+
+        if distance < 400:
+            self.chase_player()
         else:
             self.move_along_path()
 

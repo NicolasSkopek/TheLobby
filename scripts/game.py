@@ -159,9 +159,9 @@ class Game(Scene):
 
     def stopAllSounds(self):
         self.music.stop()
-        self.player.running_sound.stop()
-        ##self.enemy.scream_sound.stop()
-        ##self.enemy.chase_sound.stop()
+        self.player.running_channel.stop()
+        self.enemy.footsteps_sound.stop()
+        self.enemy.chase_sound.stop()
 
     def events(self, event):
         if event.type == pygame.KEYDOWN:

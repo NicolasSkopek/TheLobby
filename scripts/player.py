@@ -15,6 +15,8 @@ class Player(pygame.sprite.Sprite):
         self.colision_group = colision_group
         self.flip = False
 
+        self.running_channel = pygame.mixer.Channel(3)
+
         self.frame = 0
         self.tick = 0
 
@@ -67,10 +69,10 @@ class Player(pygame.sprite.Sprite):
 
     def play_running_sound(self, is_running):
         if is_running and not self.is_running:
-            self.running_sound.play(-1)
+            self.running_channel.play(self.running_sound, loops=-1)
             self.is_running = True
         elif not is_running and self.is_running:
-            self.running_sound.stop()
+            self.running_channel.stop()
             self.is_running = False
 
     def move(self):
