@@ -9,13 +9,14 @@ The Lobby é um jogo 2D em estilo 8bits, com visão top-down, onde o jogador pre
 O projeto visa criar uma experiência imersiva onde o jogador precisa resolver desafios e se esquivar de inimigos em um ambiente misterioso. A motivação do jogo é proporcionar uma jogabilidade tensa, combinando exploração e estratégia, onde o uso de algoritmos de busco em grafos (BFS) é essencial para a movimentação do inimigo. O jogo também demonstra como algoritmos podem ser aplicados em jogos 2D para interação de IA.
 ---
 
-## 👨‍💻 Tecnologias Utilizadas
+## 👨‍💻 Tecnologias e Softwares Utilizadas
 
--Python 3.12
--Pygame
--BFS (Busca em Largura)
--IDE Pycharm
--Piskel
+- Python 3.13
+- Pygame
+- BFS (Busca em Largura)
+- IDE Pycharm
+- Piskel
+- Inkscape
 
 ---
 
