@@ -1,5 +1,4 @@
 import pygame
-from scripts.obj import Obj
 
 class Scene:
 

@@ -20,7 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.flip_image = False
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 3.95
+        self.speed = 3.98
 
         self.footsteps_sound = pygame.mixer.Sound("assets/sounds/footsteps.mp3")
         self.chase_sound = pygame.mixer.Sound("assets/sounds/screams2.mp3")

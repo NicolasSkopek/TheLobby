@@ -1,5 +1,3 @@
-import pygame
-
 from scripts.camera import Camera
 from scripts.enemy import Enemy
 from scripts.gate import Gate
@@ -60,7 +58,7 @@ class Game(Scene):
         self.show_graph = False
         self.generate_map()
         self.gate = Gate([1090, 256], [64, 64], "gate", self.all_sprites, self.colision_sprites)
-        self.player = Player([208, 470], [200 / 8, 400 / 8], self.colision_sprites, self.all_sprites)
+        self.player = Player([208, 470], [80 / 2.7, 136 / 2.7], self.colision_sprites, self.all_sprites)
         self.enemy = Enemy([1394, 1443], [187 / 6, 486 / 6], self.colision_sprites, self.graph, self.player, self.all_sprites)
         ##self.enemy_2 = Enemy([1696, 450], [200 / 7, 400 / 7], self.colision_sprites, self.graph, self.player, self.all_sprites)
 
