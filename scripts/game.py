@@ -53,7 +53,7 @@ class Game(Scene):
 
         self.gameover = False
 
-        self.fixed_panels = 0
+        self.fixed_panels = 5
         self.graph = 0
         self.show_graph = False
         self.generate_map()
@@ -146,9 +146,11 @@ class Game(Scene):
 
     def finishGame(self):
         if self.gate.rect.colliderect(self.player.rect) and self.fixed_panels == 6:
-            self.active = False
             self.stopAllSounds()
+            self.active = False
             self.fixed_panels = 0
+            self.enemy.chase_channel.stop()
+            self.stopAllSounds()
 
     def game_over(self):
         if self.enemy.rect.colliderect(self.player.rect):
@@ -163,6 +165,7 @@ class Game(Scene):
         self.player.running_channel.stop()
         self.enemy.footsteps_sound.stop()
         self.enemy.chase_sound.stop()
+        self.enemy.chase_channel.stop()
 
     def events(self, event):
         if event.type == pygame.KEYDOWN:

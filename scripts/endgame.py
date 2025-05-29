@@ -5,6 +5,7 @@ from scripts.button import Button
 from scripts.obj import Obj
 from scripts.scene import Scene
 from scripts.settings import WIDTH, HEIGHT
+from scripts.enemy import Enemy
 
 
 class EndGame(Scene):
@@ -14,8 +15,9 @@ class EndGame(Scene):
 
         self.bg = Obj("assets/menu/endgame.png", [0, 0], self.all_sprites)
 
+        self.music_channel = pygame.mixer.Channel(2)
         self.music = pygame.mixer.Sound("assets/sounds/endgame.mp3")
-        self.music.play(-1)
+        self.music_channel.play(self.music, loops=-1)
 
         self.btn_return = Button(1050, 380, "return to menu", self.next_scene)
         self.btn_quit = Button(1050, 430, "quit", self.quit_game)
