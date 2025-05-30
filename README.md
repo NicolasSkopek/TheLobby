@@ -1,4 +1,4 @@
-# 🚀 Nome do Projeto
+# 🚀 The Lobby
 
 The Lobby é um jogo 2D em estilo 8bits, com visão top-down, onde o jogador precisa reparar 6 caixas de fusíveis em um ambiente labiríntico inspirado nas Backrooms. O inimigo, a Bacteria, busca o jogador utilizando o algoritmo BFS. O objetivo é escapar após reparar os fusíveis, fugindo através de uma porta. 
 
