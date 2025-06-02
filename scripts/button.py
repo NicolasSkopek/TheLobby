@@ -34,6 +34,3 @@ class Button:
             if event.button == 1 and self.render.text_rect.collidepoint(event.pos):
                 self.call_back()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1 and self.render.text_rect.collidepoint(event.pos):
-                self.call_back()
