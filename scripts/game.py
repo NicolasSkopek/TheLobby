@@ -53,7 +53,7 @@ class Game(Scene):
 
         self.gameover = False
 
-        self.fixed_panels = 5
+        self.fixed_panels = 0
         self.graph = 0
         self.show_graph = False
         self.generate_map()
